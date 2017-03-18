@@ -73,8 +73,8 @@ ToolCore.formValidation = function( opt ){
 					}
 				break;
 				case '/': 
+					//单单是有正则的
 					if ( val ) {
-						//有正则
 						var reg = eval( n.attr(opt.attr) )
 						if ( !reg.test(val) ) {
 							opt.errCallback(n.attr(re) || '格式错误!');
