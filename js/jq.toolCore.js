@@ -95,3 +95,37 @@ ToolCore.formValidation = function( opt ){
 	})
 	b.on('click',verifyForm)
 }
+
+
+
+/**
+* 千分号为逗号，并保留n位小数
+* @s 数值[ 整形 , 浮点型 ]
+* @n 保留小数位的几位小数
+*/
+ToolCore.fmoney = function(s, n) { 
+	if ( isNaN( s ) ) { return '不是数字' }
+	n = n > 0 && n <= 20 ? n : 2; 
+	s = parseFloat((s + '').replace(/[^\d\.-]/g, '')).toFixed(n) + ''; 
+	var l = s.split('.')[0].split('').reverse(), r = s.split('.')[1]; 
+	t = ''; 
+	for (i = 0; i < l.length; i++) { 
+		t += l[i] + ((i + 1) % 3 == 0 && (i + 1) != l.length ? ',' : ''); 
+	} 
+	return t.split('').reverse().join('') + '.' + r; 
+} 
+
+
+/**
+* 自定义弹出框
+* @title 标题
+* @content 内容
+* @type 类型 [ a(类似alert) , b(有确定和取消按钮) , c(显示又关闭的) ]
+*/
+ToolCore.popUp = function( title , content , type ){
+	
+}
+
+
+
+
