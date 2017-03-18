@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+
+
+<div class="form">
+	<input type="text" dataType="*/^[0-9]*$/" dataNull="1为空" dataReg="1错误">
+	<input type="text" dataType="*" dataNull="2为空">
+	<input type="text" dataType="/^[0-9]*$/" dataReg="3错误">
+	<button class="btn">提交</button>
+</div>
+
+
+
+<script src="js/jquery.min.js"></script>
+<script src="js/jquery.extend.js"></script>
+<script>
+	ToolCore.formValidation({
+		form : '.form',
+		button : '.btn',
+		errCallback : function( err ){
+			console.log(err)
+		},
+		sucCallback : function( suc ){
+			console.log(suc)
+		},
+		attr : 'dataType'
+	})
+</script>
+</body>
+</html>
