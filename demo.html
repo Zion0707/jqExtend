@@ -44,7 +44,7 @@
 	console.log( ToolCore.queryParams.getQueryParams(window.location.href) )
 	console.log( ToolCore.queryParams.getQueryParamByKey('id') )
 
-	$('#page').append(ToolCore.getAjaxPagerHtml(1,10,200,5))
+	$('#page').html(ToolCore.getAjaxPagerHtml(1,10,200,5))
 	ToolCore.pageGetAjax('#page',{pageSize:10,totalCount:200,size:5},function(nowPage){
 		console.log('第'+nowPage+'页')
 	})
