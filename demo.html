@@ -16,6 +16,9 @@
 </div>
 
 
+<div id="page"></div>
+
+<div id="time"></div>
 
 <script src="js/jquery.min.js"></script>
 <script src="js/jq.toolCore.js"></script>
@@ -34,8 +37,20 @@
 		attr : 'dataType'
 	})
 
+	//数据转换
 	console.log( ToolCore.fmoney('200022.8888',2) );
 
+	//获取url参数
+	console.log( ToolCore.queryParams.getQueryParams(window.location.href) )
+	console.log( ToolCore.queryParams.getQueryParamByKey('id') )
+
+	$('#page').append(ToolCore.getAjaxPagerHtml(1,10,200,5))
+	ToolCore.pageGetAjax('#page',{pageSize:10,totalCount:200,size:5},function(nowPage){
+		console.log('第'+nowPage+'页')
+	})
+
+	//倒计时
+	ToolCore.countDown('#time','00:00:10')
 	
 </script>
 </body>
