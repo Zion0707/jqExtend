@@ -39,51 +39,55 @@ ToolCore.formValidation = function( opt ){
 			var firstStr = a.eq(i).attr(opt.attr).charAt(0) ,
 				n = a.eq(i) ,
 				val = $.trim( n.val() ) ;
-
-			switch ( firstStr ) {
-				case '*': 
-					//必填项 || 必填项+正则
-					if ( n.attr(opt.attr).charAt(1) == '' ) {
-						if ( !val ) {
-							opt.errCallback(n.attr(ne) || '不能为空!');
-							n.focus();
-							return;
-						}else{
-							var illegal = /select|update|delete|exec|count|'|"|=|;|>|<|%/i;
-							if ( illegal.test(val) ) {
-								opt.errCallback('不能提交非法字符!');
-								n.focus();
-								return;
-							}
-						}
-					}else{
-						//不为空
-						if ( !val ) {
-							opt.errCallback(n.attr(ne) || '不能为空!');
-							n.focus();
-							return;
-						}
-						//有正则
-						var reg = eval( n.attr(opt.attr).substr(1) )
-						if ( !reg.test(val) ) {
-							opt.errCallback(n.attr(re) || '格式错误!');
-							n.focus();
-							return;
-						}
-					}
-				break;
-				case '/': 
-					//单单是有正则的
-					if ( val ) {
-						var reg = eval( n.attr(opt.attr) )
-						if ( !reg.test(val) ) {
-							opt.errCallback(n.attr(re) || '格式错误!');
-							n.focus();
-							return;
-						}
-					}
-				break;
-			}
+            try{
+    			switch ( firstStr ) {
+    				case '*': 
+    					//必填项 || 必填项+正则
+    					if ( n.attr(opt.attr).charAt(1) == '' ) {
+    						if ( !val ) {
+    							opt.errCallback(n.attr(ne) || '不能为空!');
+    							n.focus();
+    							return;
+    						}else{
+    							var illegal = /select|update|delete|exec|count|'|"|=|;|>|<|%/i;
+    							if ( illegal.test(val) ) {
+    								opt.errCallback('不能提交非法字符!');
+    								n.focus();
+    								return;
+    							}
+    						}
+    					}else{
+    						//不为空
+    						if ( !val ) {
+    							opt.errCallback(n.attr(ne) || '不能为空!');
+    							n.focus();
+    							return;
+    						}
+    						//有正则
+    						var reg = eval( n.attr(opt.attr).substr(1) )
+    						if ( !reg.test(val) ) {
+    							opt.errCallback(n.attr(re) || '格式错误!');
+    							n.focus();
+    							return;
+    						}
+    					}
+    				break;
+    				case '/': 
+    					//单单是有正则的
+    					if ( val ) {
+    						var reg = eval( n.attr(opt.attr) )
+    						if ( !reg.test(val) ) {
+    							opt.errCallback(n.attr(re) || '格式错误!');
+    							n.focus();
+    							return;
+    						}
+    					}
+    				break;
+    			}
+            }catch(err){
+                console.warn(err)
+                alert('请仔细检查您表单中填写的 dataType 值是否正确!');
+            }
 		}
 		
 		opt.sucCallback('验证通过');
