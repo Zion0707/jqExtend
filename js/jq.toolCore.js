@@ -230,20 +230,38 @@ ToolCore.getAjaxPagerHtml = function(curr, pageSize, totalCount, size) {
 * @param callback 回调参数为当前页码
 */
 ToolCore.pageGetAjax = function( div ,json, callback ){
+    var mySwitch = true;
+    var timeDelay = 600;
 	$( div ).unbind('click') 
     $( div ).on('click','a',function(){
         var _this = $( this ) ,
        	    text = $(this).text() ; 
         switch( text ){
             case '上一页':
-            	var nowPage = parseInt($(div).find('.current').text()) -1
-        	    $(div).html(ToolCore.getAjaxPagerHtml( nowPage ,json.pageSize,json.totalCount,json.size));
-                callback( nowPage )
+                if ( mySwitch == true ) {
+                	var nowPage = parseInt($(div).find('.current').text()) -1
+            	    $(div).html(ToolCore.getAjaxPagerHtml( nowPage ,json.pageSize,json.totalCount,json.size));
+                    callback( nowPage )
+
+                    mySwitch = false;
+                    var timer = setTimeout(function(){
+                        mySwitch = true;
+                        clearTimeout(timer);
+                    },timeDelay)
+                }
             break;
             case '下一页':
-            	var nowPage = parseInt($(div).find('.current').text()) +1
-        	    $(div).html(ToolCore.getAjaxPagerHtml( nowPage ,json.pageSize,json.totalCount,json.size));
-                callback( nowPage )
+                if ( mySwitch == true ) {
+                	var nowPage = parseInt($(div).find('.current').text()) +1
+            	    $(div).html(ToolCore.getAjaxPagerHtml( nowPage ,json.pageSize,json.totalCount,json.size));
+                    callback( nowPage )
+
+                    mySwitch = false;
+                    var timer = setTimeout(function(){
+                        mySwitch = true;
+                        clearTimeout(timer);
+                    },timeDelay)
+                }
             break;
             default :  //数字
         	    $(div).html(ToolCore.getAjaxPagerHtml( text ,json.pageSize,json.totalCount,json.size));
