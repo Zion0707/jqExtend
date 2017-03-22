@@ -24,6 +24,10 @@
 
 <div id="time"></div>
 
+<br>
+
+<button onclick="ToolCore.minPopUp('err','错误提示');">按钮</button>
+
 <script src="js/jquery.min.js"></script>
 <script src="js/jq.toolCore.js"></script>
 <script>
@@ -54,7 +58,12 @@
 	})
 
 	//倒计时
-	ToolCore.countDown('#time','00:00:10')
+	// ToolCore.countDown('#time','00:00:10')
+
+	//提示框
+	ToolCore.minPopUp('info','信息提示',function(){
+		console.log('信息提示')
+	})
 	
 </script>
 </body>

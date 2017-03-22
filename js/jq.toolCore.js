@@ -238,10 +238,10 @@ ToolCore.pageGetAjax = function( div ,json, callback ){
     var timeDelay = 600;
 	$( div ).unbind('click') 
     $( div ).on('click','a',function(){
-        var _this = $( this ) ,
-       	    text = $(this).text() ; 
-        switch( text ){
-            case '上一页':
+   	    var text = $(this).text() ,
+            btnClass = $(this).attr('class')
+        switch( btnClass ){
+            case 'prev':
                 if ( mySwitch == true ) {
                 	var nowPage = parseInt($(div).find('.current').text()) -1
             	    $(div).html(ToolCore.getAjaxPagerHtml( nowPage ,json.pageSize,json.totalCount,json.size));
@@ -254,7 +254,7 @@ ToolCore.pageGetAjax = function( div ,json, callback ){
                     },timeDelay)
                 }
             break;
-            case '下一页':
+            case 'next':
                 if ( mySwitch == true ) {
                 	var nowPage = parseInt($(div).find('.current').text()) +1
             	    $(div).html(ToolCore.getAjaxPagerHtml( nowPage ,json.pageSize,json.totalCount,json.size));
@@ -333,13 +333,40 @@ ToolCore.countDown = function( div, syTime ,semicolon ){
 
 
 /**
-* 自定义弹出框
-* @title 标题
-* @content 内容
-* @type 类型 [ a(类似alert) , b(有确定和取消按钮) , c(显示又关闭的) ]
+* 迷你提示框
+* @param content 内容
+* @param type 类型 [ info(提示) , alert(警告) , success(成功) , load(加载中)]
+* @param callback 回调
+* @param time 消失时间
 */
-ToolCore.popUp = function( title , content , type ){
-	
+ToolCore.minPopUp = function( type , content , callback , time ){
+    // console.log( typeof arguments[2] == 'function' )
+    var type = type || '' ,
+        timeDelay = time || 1000 ,
+        content = content || '' ,
+        timer = null ,
+        el = $('#popEl[dataType=minPopUp]') ;
+    if ( el.get(0) ) {
+        el.removeClass()
+        el.addClass(type)
+        el.find('.content').html(content)
+        el.fadeIn(100)
+        timer = setTimeout(function(){
+            el.fadeOut(100)
+            if ( callback ) { callback() }
+            clearTimeout(timer)
+        },timeDelay)
+        return;
+    }
+    var popEl = '<div id="popEl" dataType="minPopUp" class="'+type+'"><div class="inner"><span class="icon"></span><div class="content">'+content+'</div></div></div>';
+    $('body').append(popEl)
+    el = $('#popEl[dataType=minPopUp]')
+    el.fadeIn(100)
+    timer = setTimeout(function(){
+        el.fadeOut(100)
+        if ( callback ) { callback() }
+        clearTimeout(timer)
+    },timeDelay)
 }
 
 
