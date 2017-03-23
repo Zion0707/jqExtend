@@ -1,6 +1,14 @@
 var ToolCore = window['ToolCore'] || {}
 
 /**
+* 全局变量
+*/
+ToolCore.CONFIG = {
+
+}
+
+
+/**
 * 表单验证函数
 * opt 为所需要传递的对象 {} 参数如下:
 * @param form 表单验证区域盒子
