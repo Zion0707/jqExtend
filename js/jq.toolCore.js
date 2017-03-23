@@ -336,13 +336,18 @@ ToolCore.countDown = function( div, syTime ,semicolon ){
 * 迷你提示框
 * @param content 内容
 * @param type 类型 [ info(提示) , alert(警告) , success(成功) , load(加载中)]
-* @param callback 回调
 * @param time 消失时间
+* @param callback 回调
 */
-ToolCore.minPopUp = function( type , content , callback , time ){
-    // console.log( typeof arguments[2] == 'function' )
+ToolCore.minPopUp = function( type , content , time , callback  ){
+    // console.log( typeof arguments[2] === 'function' )
+    if ( typeof time === 'function' ) {
+        var callback = time ,
+            timeDelay = 1500 ;
+    }else{
+        var timeDelay = time || 1500;
+    }
     var type = type || '' ,
-        timeDelay = time || 1000 ,
         content = content || '' ,
         timer = null ,
         el = $('#popEl[dataType=minPopUp]') ;
@@ -350,23 +355,22 @@ ToolCore.minPopUp = function( type , content , callback , time ){
         el.removeClass()
         el.addClass(type)
         el.find('.content').html(content)
-        el.fadeIn(100)
-        timer = setTimeout(function(){
-            el.fadeOut(100)
-            if ( callback ) { callback() }
-            clearTimeout(timer)
-        },timeDelay)
+        popUpToggle()
         return;
     }
     var popEl = '<div id="popEl" dataType="minPopUp" class="'+type+'"><div class="inner"><span class="icon"></span><div class="content">'+content+'</div></div></div>';
     $('body').append(popEl)
     el = $('#popEl[dataType=minPopUp]')
-    el.fadeIn(100)
-    timer = setTimeout(function(){
-        el.fadeOut(100)
-        if ( callback ) { callback() }
-        clearTimeout(timer)
-    },timeDelay)
+    
+    function popUpToggle(){
+        el.fadeIn(100)
+        timer = setTimeout(function(){
+            el.fadeOut(100)
+            callback && callback()
+            clearTimeout(timer)
+        },timeDelay)
+    }
+    popUpToggle()
 }
 
 
