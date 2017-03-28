@@ -24,7 +24,7 @@ ToolCore.formValidation = function( opt ){
 	var def = {
 		form : 'body',
 		button : '[type="submit"]',
-		errCallback : function( err ){},
+		errCallback : function( err,el ){},
 		sucCallback : function( suc ){},
 		attr : 'dataType',
 		nullErr : 'dataNull',
@@ -53,7 +53,7 @@ ToolCore.formValidation = function( opt ){
     					//必填项 || 必填项+正则
     					if ( n.attr(opt.attr).charAt(1) == '' ) {
     						if ( !val ) {
-    							opt.errCallback(n.attr(ne) || '不能为空!');
+    							opt.errCallback(n.attr(ne) ,n || '不能为空!');
     							n.focus();
     							return;
     						}else{
@@ -67,14 +67,14 @@ ToolCore.formValidation = function( opt ){
     					}else{
     						//不为空
     						if ( !val ) {
-    							opt.errCallback(n.attr(ne) || '不能为空!');
+    							opt.errCallback(n.attr(ne) ,n || '不能为空!');
     							n.focus();
     							return;
     						}
     						//有正则
     						var reg = eval( n.attr(opt.attr).substr(1) )
     						if ( !reg.test(val) ) {
-    							opt.errCallback(n.attr(re) || '格式错误!');
+    							opt.errCallback(n.attr(re) ,n || '格式错误!');
     							n.focus();
     							return;
     						}
@@ -85,7 +85,7 @@ ToolCore.formValidation = function( opt ){
     					if ( val ) {
     						var reg = eval( n.attr(opt.attr) )
     						if ( !reg.test(val) ) {
-    							opt.errCallback(n.attr(re) || '格式错误!');
+    							opt.errCallback(n.attr(re) ,n || '格式错误!');
     							n.focus();
     							return;
     						}

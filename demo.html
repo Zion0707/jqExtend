@@ -36,8 +36,8 @@
 	ToolCore.formValidation({
 		form : '.form',
 		button : '.btn',
-		errCallback : function( err ){
-			console.log(err)
+		errCallback : function( err , el ){
+			console.log( err , el )
 		},
 		sucCallback : function( suc ){
 			console.log(suc)
