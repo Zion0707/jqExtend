@@ -9,6 +9,45 @@ ToolCore.CONFIG = {
 
 
 /**
+* cookie 操作函数
+* @param set : 设置cookie
+* @param get : 获取cookie
+* @param clear : 清除cookie
+*/
+ToolCore.cookieFn = {
+    //名字，值，日期，地址，域名 ,expires参数要自己定义 -> var myDate = expires=new Date(new Date().getTime() + 1000 * 3600 * 24 * 1);
+    set:function(name,value,expires,path,domain)
+    {
+        //如果默认不填写时间的话，那么就是365天
+        if(typeof expires=="undefined")
+        {   
+            //1000 * 3600 * 24 * 365(天数)
+            expires=new Date(new Date().getTime()+1000*3600*24*365);
+        }
+        document.cookie=name+"="+escape(value)+((expires)?"; expires="+expires.toGMTString():"")+((path)?"; path="+path:"; path=/")+((domain)?";domain="+domain:"");
+    },
+    //获取cookie值
+    get:function(name)
+    {
+        var arr = document.cookie.match(new RegExp("(^| )"+name+"=([^;]*)(;|$)"));
+        if(arr != null)
+        {
+            return unescape(arr[2]);
+        }
+        return null;
+    },
+    //删除指定cookie
+    clear:function(name,path,domain)
+    {
+        if(this.get(name))
+        {
+        document.cookie=name+"="+((path)?"; path="+path:"; path=/")+((domain)?"; domain="+domain:"")+";expires=Fri, 02-Jan-1970 00:00:00 GMT";
+        }
+    }
+}
+
+
+/**
 * 表单验证函数
 * opt 为所需要传递的对象 {} 参数如下:
 * @param form 表单验证区域盒子
@@ -285,10 +324,10 @@ ToolCore.pageGetAjax = function( div ,json, callback ){
 /**
 * 倒计时
 * @param div 显示盒子
-* @param syTime 时间 例如:'24:00:00'
+* @param syTime 时间 例如:'24:00:00' 必须传入 YY:MM:DD 格式
 * @param semicolon 自定义分号默认为 : 
 */
-ToolCore.countDown = function( div, syTime ,semicolon ){
+ToolCore.countDown = function( div , syTime , semicolon ){
         //根据剩余时间字符串计算出总秒数
     function getTotalSecond(timestr) {
         var reg = /\d+/g;
@@ -380,6 +419,8 @@ ToolCore.minPopUp = function( type , content , time , callback  ){
             marginLeft: '-'+ (innerOuterWidth/2) +'px',
             marginTop: '-'+ (innerOuterHeight/2) +'px'
         })
+
+        clearTimeout(timer)
         timer = setTimeout(function(){
             el.fadeOut(100)
             callback && callback()
