@@ -17,45 +17,88 @@ ul,li{
 	display: none;
 	&.info{
 		.inner{
-			background-color:#eee;
+			background-color:#666;
+			max-width:260px;
+			height:auto;
+			min-height:auto;
+			.content{
+				color:#fff;
+			}
+			.icon{
+				display: none;
+			}
 		}
 	}
 	&.alert{
 		.inner{
 			background-color:#f9cc81;
+			min-width:160px;
+			.content{
+				color:#fff;
+			}
+			.icon{
+				width: 16px;
+    			background-position: -100px 20px;
+			}
 		}
 	}
 	&.success{
 		.inner{
 			background-color:#a4de82;
+			min-width:160px;
+			.content{
+				color:#fff;
+			}
+			.icon{
+				width: 100px;
+    			background-position: 0px 20px;
+			}
 		}
 	}
-	&.err{
+	&.error{
 		.inner{
 			background-color:#f47371;
+			min-width:160px;
+			.content{
+				color:#fff;
+			}
+			.icon{
+				width: 80px;
+    			background-position: -116px 20px;
+			}
 		}
 	}
-	&.load{
+	&.loading{
 		.inner{
-			background-color:#999;
+			background-color:#000;
+			min-width:160px;
+			.content{
+				color:#fff;
+			}
+			.icon{
+				width: 80px;
+				background:url(../images/loader.gif) no-repeat center 20px;
+			}
 		}
 	}
 	.inner{
 		padding:10px;
-		width:140px;
-		min-height:140px;
+		max-width:160px;
+		min-height:160px;
 		position: fixed;
 		left:50%;
 		top:50%;
-		margin-left:-75px;
-		margin-top:-75px;
+		margin-left:-80px;
+		margin-top:-80px;
 		border-radius:5px;
 	}
 	.icon{
-		width:100px;
-		height:100px;
+		width:120px;
+		height:110px;
 		margin:10px auto;
 		display: block;
+		background-image:url(../images/ext_hint_icon.png);
+		background-repeat:no-repeat;
 	}
 	.content{
 		text-align: center;

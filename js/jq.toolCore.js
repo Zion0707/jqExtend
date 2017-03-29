@@ -343,7 +343,7 @@ ToolCore.countDown = function( div, syTime ,semicolon ){
 /**
 * 迷你提示框
 * @param content 内容
-* @param type 类型 [ info(提示) , alert(警告) , success(成功) , load(加载中)]
+* @param type 类型 [ info(轻提示) , alert(警告) , success(成功) , error('错误') , loading(加载中)]
 * @param time 消失时间
 * @param callback 回调
 */
@@ -372,6 +372,14 @@ ToolCore.minPopUp = function( type , content , time , callback  ){
     
     function popUpToggle(){
         el.fadeIn(100)
+        //居中定位
+        var inner = el.find('.inner') ,
+            innerOuterWidth = inner.outerWidth() ,
+            innerOuterHeight = inner.outerHeight()
+        inner.css({
+            marginLeft: '-'+ (innerOuterWidth/2) +'px',
+            marginTop: '-'+ (innerOuterHeight/2) +'px'
+        })
         timer = setTimeout(function(){
             el.fadeOut(100)
             callback && callback()
