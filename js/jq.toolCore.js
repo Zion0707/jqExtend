@@ -431,3 +431,24 @@ ToolCore.minPopUp = function( type , content , time , callback  ){
 }
 
 
+/*
+* 获取文件后缀名
+* @param filename 文件名
+*/
+ToolCore.getSuffix = function( filename ){
+    if ( filename ) {
+        var index1 = filename.lastIndexOf('.') ,
+            index2 = filename.length ;
+        return filename.substring(index1,index2)
+    }else{
+        return '';
+    }
+}
+
+
+
+
+
+
+
+

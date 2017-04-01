@@ -26,7 +26,7 @@
 
 <br>
 
-<button onclick="ToolCore.minPopUp('info','轻提示');">按钮</button>
+<button onclick="ToolCore.minPopUp('info','轻提示');">提示框按钮</button>
 
 <script src="js/jquery.min.js"></script>
 <script src="js/jq.toolCore.js"></script>
@@ -60,13 +60,10 @@
 	//倒计时
 	ToolCore.countDown('#time','00:01:10')
 
-	//提示框
-	ToolCore.minPopUp('success','success',function(){
-		console.log('success')
-	})
-
 	//设置cookie
 	ToolCore.cookieFn.set('name','Zion')
+
+	console.log( ToolCore.getSuffix('12312312.jpg') )
 	
 </script>
 </body>
