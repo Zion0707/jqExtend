@@ -446,9 +446,234 @@ ToolCore.getSuffix = function( filename ){
 }
 
 
+/*
+* 获取未来的日期
+* @param day 天数
+**/
+ToolCore.futureDay = function( day ){
+    var d = new Date();
+    return new Date(d.getTime() + day*24*60*60*1000);
+}
 
 
 
+
+/*
+* 日期操作
+*@namespace oofUtil.date
+*/
+ToolCore.DateFormat = {
+    /**
+     * 格式化时间函数
+     * @param date 要格式化的时间 默认 new Date
+     * @param fmt 要格式化的格式 默认 yyyy-MM-dd HH:mm:ss
+     */
+    diffArr : [ [ "y", 31536e6 ], [ "M", 2592e6 ], [ "d", 864e5 ], [ "h", 36e5 ], [ "m", 6e4 ], [ "s", 1e3 ] ] ,
+    format: function(date, fmt) {
+        date = date || new Date();
+        var o = {
+            "M+": date.getMonth() + 1,
+            //月份
+            "d+": date.getDate(),
+            //日
+            "h+": date.getHours() % 12 == 0 ? 12 : date.getHours() % 12,
+            //小时
+            "H+": date.getHours(),
+            //小时
+            "m+": date.getMinutes(),
+            //分
+            "s+": date.getSeconds(),
+            //秒
+            S: date.getMilliseconds()
+        }, week = {
+            "0": "日",
+            "1": "一",
+            "2": "二",
+            "3": "三",
+            "4": "四",
+            "5": "五",
+            "6": "六"
+        }, zhou = {
+            1: "一",
+            2: "二",
+            3: "三",
+            4: "四",
+            5: "五",
+            6: "六"
+        };
+        fmt = fmt || "yyyy-MM-dd HH:mm:ss";
+        if (/(y+)/.test(fmt)) {
+            //年特殊处理
+            fmt = fmt.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length));
+        }
+        if (/(E+)/.test(fmt)) {
+            //星期特殊处理
+            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length > 1 ? RegExp.$1.length > 2 ? "星期" : "周" : "") + week[date.getDay() + ""]);
+        }
+        if (/(e+)/.test(fmt)) {
+            //第几周特殊处理
+            var z = ~~(date.getDate() / 7) + 1;
+            fmt = fmt.replace(RegExp.$1, RegExp.$1.length > 1 ? zhou[z] : z);
+        }
+        if (/(q+)/.test(fmt)) {
+            //第几季特殊处理
+            var z = Math.floor((date.getMonth() + 3) / 3);
+            fmt = fmt.replace(RegExp.$1, RegExp.$1.length > 1 ? zhou[z] : z);
+        }
+        for (var k in o) {
+            if (new RegExp("(" + k + ")").test(fmt)) {
+                fmt = fmt.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ("00" + o[k]).substr(("" + o[k]).length));
+            }
+        }
+        return fmt;
+    },
+    /**
+     * 通过时间戳获取一个时间对象
+     * @param timestamp
+     * @param fix
+     * @return {Date}
+     */
+    fromTimestamp: function(timestamp, fix) {
+        fix = fix || 1;
+        return new Date(timestamp * fix);
+    },
+    formatPhpTimespan: function(v, isfuture) {
+        var date = new Date(v * 1e3);
+        if (oofUtil.type(isfuture) == "string") {
+            //format
+            return Core.DateFormat.format(date, isfuture);
+        }
+        var curr2 = new Date(+new Date() + (window.DIFF_TIME || 0)), t = Core.DateFormat.fix(date, "s"), t1 = Core.DateFormat.fix(curr2, "s"), diff = t1 - t;
+        if (diff < 0 && !isfuture) {
+            return "刚刚";
+        }
+        if (diff < 60 && diff > -60) {
+            //1分钟
+            if (diff > -5 && diff < 5) {
+                return "刚刚";
+            }
+            if (diff < 0) return -diff + "秒后";
+            return diff + "秒前";
+        }
+        if (diff < 3600 && diff > -3600) {
+            //1小时
+            if (diff < 0) return ~~(-diff / 60) + "分钟后";
+            return ~~(diff / 60) + "分钟前";
+        }
+        t = Core.DateFormat.fix(date, "d");
+        t1 = Core.DateFormat.fix(curr2, "d");
+        diff = t1 - t;
+        if (diff === 0) {
+            //当天
+            return "今天 " + Core.DateFormat.format(date, "HH:mm");
+        }
+        if (diff == 1) {
+            //昨天
+            return "昨天 " + Core.DateFormat.format(date, "HH:mm");
+        }
+        if (date.getFullYear() == curr2.getFullYear()) {
+            //当年
+            return Core.DateFormat.format(date, "MM-dd HH:mm");
+        }
+        return Core.DateFormat.format(date, "yyyy-MM-dd");
+    },
+    /**
+     * 服务器当前时间
+     */
+    serverNow: function() {
+        return new Date();
+    },
+    /**
+     * 求两个时间的差值，
+     * @param date
+     * @param diff
+     * @param fmt   yMdhms：y年M月d日，h小时，m分，s秒
+     * @returns {*}
+     */
+    diffFormat: function(date, diff, fmt) {
+        var i, c, d, m, dif = date - diff;
+        if (dif <= 0) return "";
+        for (i = 0, c = ToolCore.DateFormat.diffArr.length; i < c; i++) {
+            d = ToolCore.DateFormat.diffArr[i];
+            if (~fmt.indexOf(d[0])) {
+                m = dif % d[1];
+                fmt = fmt.replace(d[0], (dif - m) / d[1]);
+                dif = m;
+            }
+        }
+        return fmt;
+    },
+    /**
+     * 将时间（时间戳）date 取整到指定的m
+     * @param date 时间、时间戳
+     * @param m  y M d h m s
+     * @param up
+     * @returns {number}
+     */
+    fix: function(date, m, up) {
+        var i, c, d, res = +date - +new Date("Thu Jan 01 1970 00:00:00 GMT+0800");
+        for (i = 0, c = ToolCore.DateFormat.diffArr.length; i < c; i++) {
+            d = ToolCore.DateFormat.diffArr[i];
+            if (m == d[0]) {
+                m = res % d[1];
+                res = (res - m) / d[1];
+                if (up) res++;
+                return res;
+            }
+        }
+        return 0;
+    },
+    /**
+     * 从指定格式的字符串中解析出时间
+     * @param dateStr
+     * @param fmt
+     * @param cur
+     * @returns {*}
+     */
+    fromString: function(dateStr, fmt, cur) {
+        var f = fmt, r = "", t;
+        var o = [ "d", "m", "M", "h", "H", "s", "f" ];
+        for (var i = 0; i < o.length; i++) {
+            t = "(" + o[i] + "+)";
+            if (new RegExp(t).test(fmt)) {
+                fmt = fmt.replace(RegExp.$1, "(\\d{1,2})");
+                r += t + "|";
+            }
+        }
+        if (/(y+)/.test(fmt)) {
+            fmt = fmt.replace(RegExp.$1, "(\\d{4})");
+            r += "(y+)|";
+        }
+        if (/(E+)/.test(fmt)) {
+            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length > 1 ? RegExp.$1.length > 2 ? "星期" : "周" : "") + "[日一二三四五六]");
+        }
+        if (/(q+)/.test(fmt)) {
+            fmt = fmt.replace(RegExp.$1, "d{1}");
+        }
+        if (/(p+)/.test(fmt)) {
+            fmt = fmt.replace(RegExp.$1, "(PM|AM)");
+            r += "(p+)|";
+        }
+        r = "(" + r + "d+)";
+        var re = new RegExp(r);
+        re.lastIndex = 0;
+        //re.exec(f);
+        var vs = new RegExp(fmt).exec(dateStr), e, i = 0, v = {};
+        if (vs) {
+            while (e = re.exec(f)) {
+                i++;
+                f = f.substring(e.index + RegExp.$1.length);
+                v[RegExp.$1.substring(0, 1)] = vs[i];
+                if (f == "") break;
+            }
+            if (!v.H) {
+                v.H = (v.h || 0) * 1;
+                if (v.p == "PM") v.H += 12;
+            }
+            return new Date(v.y, (v.M || 1) - 1, v.d || 1, v.H || 0, v.m || 0, v.s || 0);
+        } else return cur || new Date();
+    }
+};
 
 
 
