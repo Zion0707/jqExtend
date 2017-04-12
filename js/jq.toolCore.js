@@ -677,3 +677,15 @@ ToolCore.DateFormat = {
 
 
 
+/*
+* 对象数组的深拷贝
+* @param source 对象or数组
+**/
+ToolCore.objDeepCopy = function (source) {
+    var sourceCopy = source instanceof Array ? [] : {};
+    for (var item in source) {
+        sourceCopy[item] = typeof source[item] === 'object' ? ToolCore.objDeepCopy(source[item]) : source[item];
+    }
+    return sourceCopy;
+}
+
