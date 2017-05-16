@@ -149,7 +149,7 @@ ToolCore.formValidation = function( opt ){
 
 
 /**
-* 千分号为逗号，并保留n位小数
+* 数字千分号为逗号，并保留n位小数
 * @param s 数值[ 整形 , 浮点型 ]
 * @param n 保留小数位的几位小数
 */
@@ -163,8 +163,27 @@ ToolCore.fmoney = function(s, n) {
 		t += l[i] + ((i + 1) % 3 == 0 && (i + 1) != l.length ? ',' : ''); 
 	} 
 	return t.split('').reverse().join('') + '.' + r; 
-} 
+}
 
+
+/**
+* 数字不四舍五入的，转换
+* @param s 数值[ 整形 , 浮点型 ]
+* @param n 保留小数位的几位小数
+*/
+ToolCore.floatingPoint = function(s, n) { 
+    if ( isNaN( s ) ) { return '不是数字' }
+    s = s.toString()
+    if ( s.indexOf('.') == -1 ) {
+        s += '.00'
+    }else if( s.split('.')[1].length == 1 ){
+        s += '0'
+    }else{
+        var si = s.indexOf('.') + n + 1 ;
+        s = s.substr( 0 , si );
+    }
+    return s;
+} 
 
 /**
 *获取url参数
